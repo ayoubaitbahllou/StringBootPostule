@@ -33,8 +33,7 @@ public class OffreController {
         offre.setTitle(inputs.get("title"));
         offre.setDescription(inputs.get("description"));
         offre.setEtat(false);
-        String session_id = inputs.get("session_id");
-        Long user_id = (Long) session.getAttribute(session_id);
+        Long user_id = Long.parseLong(inputs.get("session_id"));
         Optional<User> user = userRepository.findById(user_id);
         if (user != null) {
             User u = user.get();
