@@ -80,4 +80,14 @@ public class OffreController {
         return new ResponseEntity(map,HttpStatus.OK);
 
     }
+
+
+    @CrossOrigin(origins = "http://localhost:4200/")
+    @GetMapping("/my-offres/candidat")
+    public ResponseEntity<User> getCandidats(HttpSession session,@RequestParam Map<String, String> inputs) {
+
+        Long offre_id=Long.parseLong(inputs.get("offre_id"));
+        List<Object> candidats = offreRepository.candidats(offre_id);
+        return new ResponseEntity( candidats, HttpStatus.OK);
+    }
 }
