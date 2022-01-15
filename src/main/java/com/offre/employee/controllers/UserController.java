@@ -40,10 +40,10 @@ public class UserController {
         User user = userRepository.connexion(inputs.get("email"), inputs.get("password"));
         System.out.println(inputs.get("email"));
         if (user != null) {
-            String key= getAlphaNumericString(10);
-            session.setAttribute(key, user.getId());
+
+            session.setAttribute(user.getId().toString(), user.getId());
             HashMap<String, String> map = new HashMap<>();
-            map.put("session_id",key);
+            map.put("session_id",user.getId().toString());
             return new ResponseEntity<HashMap>(map, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
@@ -53,8 +53,8 @@ public class UserController {
     @CrossOrigin(origins = "http://localhost:4200/")
     @GetMapping("/user")
     public ResponseEntity<User> user(HttpSession session,@RequestParam Map<String, String> inputs) {
-        String session_id=inputs.get("session_id");
-        Long user_id = (Long) session.getAttribute(session_id);
+        Long user_id=Long.parseLong(inputs.get("session_id"));
+
         Optional<User> user = userRepository.findById(user_id);
         if (user != null) {
             return new ResponseEntity( user, HttpStatus.OK);
@@ -69,30 +69,5 @@ public class UserController {
         return "disconnected succefully";
     }
 
-    static String getAlphaNumericString(int n)
-    {
 
-        // chose a Character random from this String
-        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                + "0123456789"
-                + "abcdefghijklmnopqrstuvxyz";
-
-        // create StringBuffer size of AlphaNumericString
-        StringBuilder sb = new StringBuilder(n);
-
-        for (int i = 0; i < n; i++) {
-
-            // generate a random number between
-            // 0 to AlphaNumericString variable length
-            int index
-                    = (int)(AlphaNumericString.length()
-                    * Math.random());
-
-            // add Character one by one in end of sb
-            sb.append(AlphaNumericString
-                    .charAt(index));
-        }
-
-        return sb.toString();
-    }
 }

@@ -25,6 +25,7 @@ public class Offre {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonBackReference
     @ManyToMany
     Set<User> users;
 

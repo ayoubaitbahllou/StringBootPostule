@@ -37,6 +37,7 @@ public class User {
     @Column(nullable = true)
     private String cv;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private Set<Offre> offre;
 

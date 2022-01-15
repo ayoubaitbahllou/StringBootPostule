@@ -62,10 +62,9 @@ public class OffreController {
     @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/postuler")
     public ResponseEntity postuler(@RequestParam Map<String, String> inputs, HttpSession session) {
-        String session_id = inputs.get("session_id");
 
-        Long offre_id=Long.parseLong(inputs.get("offre_id"));
-        Long user_id = (Long) session.getAttribute(session_id);
+        Long offre_id=Long.parseLong(inputs.get("offer_id"));
+        Long user_id=Long.parseLong(inputs.get("session_id"));
 
         Integer isPostuled =offreRepository.hasPostuled(user_id,offre_id);
         HashMap<String, String> map = new HashMap<>();
