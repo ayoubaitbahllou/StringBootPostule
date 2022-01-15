@@ -1,5 +1,6 @@
 package com.offre.employee.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.offre.employee.models.User;
 import com.offre.employee.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api")
@@ -17,34 +21,45 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestParam Map<String, String> inputs) {
+    public ResponseEntity<HashMap> register(@RequestParam Map<String, String> inputs) {
         User user = new User();
         user.setEmail(inputs.get("email"));
         user.setName(inputs.get("name"));
         user.setPassword(inputs.get("password"));
         userRepository.save(user);
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("message","Vous etes bien enregistrer");
+        return new ResponseEntity<HashMap>(map, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam Map<String, String> inputs, HttpSession session) {
+    public ResponseEntity<HashMap> login(@RequestParam Map<String, String> inputs, HttpSession session) {
         User user = userRepository.connexion(inputs.get("email"), inputs.get("password"));
+        System.out.println(inputs.get("email"));
         if (user != null) {
-            session.setAttribute("user", user);
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+            String key= getAlphaNumericString(10);
+            session.setAttribute(key, user.getId());
+            HashMap<String, String> map = new HashMap<>();
+            map.put("session_id",key);
+            return new ResponseEntity<HashMap>(map, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:4200/")
     @GetMapping("/user")
-    public ResponseEntity<User> user(HttpSession session) {
-        Object user = session.getAttribute("user");
+    public ResponseEntity<User> user(HttpSession session,@RequestParam Map<String, String> inputs) {
+        String session_id=inputs.get("session_id");
+        Long user_id = (Long) session.getAttribute(session_id);
+        Optional<User> user = userRepository.findById(user_id);
         if (user != null) {
-            return new ResponseEntity<User>((User) user, HttpStatus.OK);
+            return new ResponseEntity( user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(null, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -52,5 +67,32 @@ public class UserController {
     public String disconnect(HttpSession session) {
         session.removeAttribute("user");
         return "disconnected succefully";
+    }
+
+    static String getAlphaNumericString(int n)
+    {
+
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
     }
 }

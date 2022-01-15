@@ -1,5 +1,8 @@
 package com.offre.employee.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +40,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Offre> offre;
 
+    @JsonManagedReference
     @ManyToMany
-    Set<Offre> offres;
+    List<Offre> offres;
 
     public Long getId() {
         return id;
@@ -88,11 +92,11 @@ public class User {
         this.offre = offre;
     }
 
-    public Set<Offre> getOffres() {
+    public List<Offre> getOffres() {
         return offres;
     }
 
-    public void setOffres(Set<Offre> offres) {
+    public void setOffres(List<Offre> offres) {
         this.offres = offres;
     }
 }

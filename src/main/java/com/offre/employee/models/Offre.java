@@ -1,6 +1,9 @@
 package com.offre.employee.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity(name = "offres")
@@ -17,6 +20,7 @@ public class Offre {
 
     public Boolean etat = false;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
