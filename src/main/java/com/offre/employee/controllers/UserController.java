@@ -1,7 +1,9 @@
 package com.offre.employee.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.offre.employee.models.Offre;
 import com.offre.employee.models.User;
+import com.offre.employee.repositories.OffreRepository;
 import com.offre.employee.repositories.UserRepository;
 import com.offre.employee.services.UploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OffreRepository offreRepository;
 
     @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/register")
@@ -78,6 +82,15 @@ public class UserController {
     public String disconnect(HttpSession session) {
         session.removeAttribute("user");
         return "disconnected succefully";
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200/")
+    @GetMapping("/my-offres")
+    public ResponseEntity<User> myOffres(HttpSession session,@RequestParam Map<String, String> inputs) {
+        Long user_id=Long.parseLong(inputs.get("session_id"));
+
+        List<Offre> myOffres = offreRepository.myOffres(user_id);
+        return new ResponseEntity( myOffres, HttpStatus.OK);
     }
 
 

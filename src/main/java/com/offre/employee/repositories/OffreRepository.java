@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OffreRepository extends CrudRepository<Offre, Long> {
@@ -24,5 +25,15 @@ public interface OffreRepository extends CrudRepository<Offre, Long> {
             value = "select count(*) as somme from offres_users where users_id=:user_id and offres_id= :offre_id",
             nativeQuery = true)
     Integer hasPostuled(@Param("user_id") Long user_id, @Param("offre_id") Long offre_id);
+
+    @Query(
+            value = "select * from offres where user_id=:user_id",
+            nativeQuery = true)
+    List<Offre> myOffres(@Param("user_id") Long user_id);
+//"select u.* from users u join offres_users ofs on ofs.users_id = u.id where ofs.offres_id = :offre_id"
+    @Query(
+            value = "select u.* from users u join offres_users ofs on ofs.users_id = u.id where ofs.offres_id = :offre_id",
+            nativeQuery = true)
+    List<Object> candidats(@Param("offre_id") Long offre_id);
 
 }
