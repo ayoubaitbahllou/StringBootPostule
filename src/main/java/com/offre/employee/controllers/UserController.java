@@ -38,7 +38,7 @@ public class UserController {
     }
 
     public String uploadCv(MultipartFile file) {
-        String location = "C:\\Users\\Meriem\\projects\\masterCours\\StringBootPostule\\src\\main\\uploads";
+        String location = "C:\\Users\\hamza\\Desktop\\StringBootPostule\\src\\main\\uploads";
         UploadFileService uploadFileService = new UploadFileService(location);
         uploadFileService.saveFile(file);
         //
